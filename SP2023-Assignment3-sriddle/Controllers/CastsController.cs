@@ -10,110 +10,94 @@ using SP2023_Assignment3_sriddle.Models;
 
 namespace SP2023_Assignment3_sriddle.Controllers
 {
-    public class MoviesController : Controller
+    public class CastsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public MoviesController(ApplicationDbContext context)
+        public CastsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Movies
+        // GET: Casts
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Movie.ToListAsync());
+            var applicationDbContext = _context.Cast.Include(c => c.Actor).Include(c => c.Movie);
+            return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Movies/Details/5
+        // GET: Casts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Movie == null)
+            if (id == null || _context.Cast == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movie
+            var cast = await _context.Cast
+                .Include(c => c.Actor)
+                .Include(c => c.Movie)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            if (cast == null)
             {
                 return NotFound();
             }
-            CastsVM castsVM = new CastsVM();
-            castsVM.Movie = movie;
-            castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).ToList();
-            //castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).Include(c => c.Actor).ToList();
 
-
-            return View(castsVM);
+            return View(cast);
         }
 
-        // GET: Movies/Create
+        // GET: Casts/Create
         public IActionResult Create()
         {
+            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id");
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title");
             return View();
         }
 
-        // POST: Movies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,IMDBLink,Genre,ReleaseYear")] Movie movie, IFormFile Poster)
-        {
-            if (ModelState.IsValid)
-            {
-                if (Poster != null && Poster.Length > 0)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await Poster.CopyToAsync(memoryStream);
-                        movie.Poster = memoryStream.ToArray();
-                    }
-                }
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(movie);
-        }
-
-        public async Task<IActionResult> GetMoviePoster(int id)
-        {
-            var movie = await _context.Movie.FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            var imageData = movie.Poster;
-
-            return File(imageData, "image/jpg");
-        }
-
-        // GET: Movies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Movie == null)
-            {
-                return NotFound();
-            }
-
-            var movie = await _context.Movie.FindAsync(id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return View(movie);
-        }
-
-        // POST: Movies/Edit/5
+        // POST: Casts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,IMDBLink,Genre,ReleaseYear,Poster")] Movie movie)
+        public async Task<IActionResult> Create([Bind("Id,MovieId,ActorId")] Cast cast)
         {
-            if (id != movie.Id)
+            if (ModelState.IsValid)
+            {
+                _context.Add(cast);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id", cast.ActorId);
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
+            return View(cast);
+        }
+
+        // GET: Casts/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.Cast == null)
+            {
+                return NotFound();
+            }
+
+            var cast = await _context.Cast.FindAsync(id);
+            if (cast == null)
+            {
+                return NotFound();
+            }
+            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id", cast.ActorId);
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
+            return View(cast);
+        }
+
+        // POST: Casts/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MovieId,ActorId")] Cast cast)
+        {
+            if (id != cast.Id)
             {
                 return NotFound();
             }
@@ -122,12 +106,12 @@ namespace SP2023_Assignment3_sriddle.Controllers
             {
                 try
                 {
-                    _context.Update(movie);
+                    _context.Update(cast);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MovieExists(movie.Id))
+                    if (!CastExists(cast.Id))
                     {
                         return NotFound();
                     }
@@ -138,49 +122,53 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(movie);
+            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id", cast.ActorId);
+            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
+            return View(cast);
         }
 
-        // GET: Movies/Delete/5
+        // GET: Casts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Movie == null)
+            if (id == null || _context.Cast == null)
             {
                 return NotFound();
             }
 
-            var movie = await _context.Movie
+            var cast = await _context.Cast
+                .Include(c => c.Actor)
+                .Include(c => c.Movie)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
+            if (cast == null)
             {
                 return NotFound();
             }
 
-            return View(movie);
+            return View(cast);
         }
 
-        // POST: Movies/Delete/5
+        // POST: Casts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Movie == null)
+            if (_context.Cast == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Movie'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Cast'  is null.");
             }
-            var movie = await _context.Movie.FindAsync(id);
-            if (movie != null)
+            var cast = await _context.Cast.FindAsync(id);
+            if (cast != null)
             {
-                _context.Movie.Remove(movie);
+                _context.Cast.Remove(cast);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MovieExists(int id)
+        private bool CastExists(int id)
         {
-          return _context.Movie.Any(e => e.Id == id);
+          return _context.Cast.Any(e => e.Id == id);
         }
     }
 }

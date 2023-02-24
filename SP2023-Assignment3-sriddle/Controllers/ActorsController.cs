@@ -54,15 +54,35 @@ namespace SP2023_Assignment3_sriddle.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Gender,Age,IMDBLink,Photo")] Actor actor, IFormFile Photo)
+        public async Task<IActionResult> Create([Bind("Id,Name,Gender,Age,IMDBLink")] Actor actor, IFormFile Photo)
         {
             if (ModelState.IsValid)
             {
+                if (Photo != null && Photo.Length > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await Photo.CopyToAsync(memoryStream);
+                        actor.Photo = memoryStream.ToArray();
+                    }
+                }
                 _context.Add(actor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(actor);
+        }
+
+        public async Task<IActionResult> GetActorPhoto(int id)
+        {
+            var actor = await _context.Actor.FirstOrDefaultAsync(a => a.Id == id);
+            if (actor == null)
+            {
+                return NotFound();
+            }
+            var imageData = actor.Photo;
+
+            return File(imageData, "image/jpg");
         }
 
         // GET: Actors/Edit/5

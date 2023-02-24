@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SP2023_Assignment3_sriddle.Data;
 
@@ -11,9 +12,10 @@ using SP2023_Assignment3_sriddle.Data;
 namespace SP2023_Assignment3_sriddle.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230224032215_updatedActor")]
+    partial class updatedActor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,48 +255,6 @@ namespace SP2023_Assignment3_sriddle.Data.Migrations
                     b.ToTable("Actor");
                 });
 
-            modelBuilder.Entity("SP2023_Assignment3_sriddle.Models.AnalyzeTweet", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Sentiment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tweet")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AnalyzeTweet");
-                });
-
-            modelBuilder.Entity("SP2023_Assignment3_sriddle.Models.Cast", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("ActorId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActorId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Cast");
-                });
-
             modelBuilder.Entity("SP2023_Assignment3_sriddle.Models.Movie", b =>
                 {
                     b.Property<int>("Id")
@@ -373,21 +333,6 @@ namespace SP2023_Assignment3_sriddle.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("SP2023_Assignment3_sriddle.Models.Cast", b =>
-                {
-                    b.HasOne("SP2023_Assignment3_sriddle.Models.Actor", "Actor")
-                        .WithMany()
-                        .HasForeignKey("ActorId");
-
-                    b.HasOne("SP2023_Assignment3_sriddle.Models.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId");
-
-                    b.Navigation("Actor");
-
-                    b.Navigation("Movie");
                 });
 #pragma warning restore 612, 618
         }
