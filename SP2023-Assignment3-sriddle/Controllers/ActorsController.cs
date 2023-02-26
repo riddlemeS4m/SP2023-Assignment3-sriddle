@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP2023_Assignment3_sriddle.Data;
 using SP2023_Assignment3_sriddle.Models;
+using Tweetinvi;
+using VaderSharp2;
 
 namespace SP2023_Assignment3_sriddle.Controllers
 {
@@ -41,6 +43,47 @@ namespace SP2023_Assignment3_sriddle.Controllers
             }
 
             return View(actor);
+        }
+
+        public async Task<IActionResult> Analyze(int? id)
+        {
+            if (id == null || _context.Actor == null)
+            {
+                return NotFound();
+            }
+
+            var actor = await _context.Actor
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (actor == null)
+            {
+                return NotFound();
+            }
+
+            var userClient = new TwitterClient("AAx9UfdCemph0Pg0t8Moq5c6L", "LbhoERpFGjBESYSNjTHuRvE0R80cGxZBx5lJWanM5lFpO2Hs63", "1455230009153503238-WTxQgoYUAQ3D9PTSsUu8stHkmJvuVe", "2ZVnM9tWbCSNAhyJcyC4WPIgiIbUWZ77MTLSx2Qb8TkW3");
+            var searchResponse = await userClient.SearchV2.SearchTweetsAsync(actor.Name);
+            var tweets = searchResponse.Tweets;
+            var analyzer = new SentimentIntensityAnalyzer();
+
+            double tweetTotal = 0;
+            List<AnalyzeTweet> analyzeTweets = new List<AnalyzeTweet>();
+
+            for (int i = 0; i < tweets.Length; i++)
+            {
+                var results = analyzer.PolarityScores(tweets[i].Text);
+                tweetTotal += results.Compound;
+                analyzeTweets.Add(new AnalyzeTweet
+                {
+                    Tweet = tweets[i].Text,
+                    Sentiment = results.Compound.ToString()
+                });
+            }
+
+            TweetsVM tweetsVM = new TweetsVM();
+            tweetsVM.Name = actor.Name;
+            tweetsVM.Average = tweetTotal / tweets.Length;
+            tweetsVM.Tweets = analyzeTweets;
+
+            return View(tweetsVM);
         }
 
         // GET: Actors/Create
@@ -105,8 +148,8 @@ namespace SP2023_Assignment3_sriddle.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Gender,Age,IMDBLink,Photo")] Actor actor)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Gender,Age,IMDBLink")] Actor actor, IFormFile Photo)
         {
             if (id != actor.Id)
             {
@@ -117,6 +160,14 @@ namespace SP2023_Assignment3_sriddle.Controllers
             {
                 try
                 {
+                    if (Photo != null && Photo.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await Photo.CopyToAsync(memoryStream);
+                            actor.Photo = memoryStream.ToArray();
+                        }
+                    }
                     _context.Update(actor);
                     await _context.SaveChangesAsync();
                 }

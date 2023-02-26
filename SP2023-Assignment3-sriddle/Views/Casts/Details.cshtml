@@ -20,7 +20,13 @@
             @Html.DisplayNameFor(model => model.Actor)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Actor.Id)
+            @Html.DisplayFor(model => model.Actor.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CharacterName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CharacterName)
         </dd>
     </dl>
 </div>

@@ -1,4 +1,4 @@
-﻿@model SP2023_Assignment3_sriddle.Models.Cast
+﻿@model SP2023_Assignment3_sriddle.Models.CastVM
 
 @{
     ViewData["Title"] = "Create";
@@ -13,12 +13,17 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="MovieId" class="control-label"></label>
-                <select asp-for="MovieId" class ="form-control" asp-items="ViewBag.MovieId"></select>
+                <label asp-for="Cast.MovieId" class="control-label"></label>
+                <select asp-for="Cast.MovieId" class ="form-control" asp-items="Model.MovieNames"></select>
             </div>
             <div class="form-group">
-                <label asp-for="ActorId" class="control-label"></label>
-                <select asp-for="ActorId" class ="form-control" asp-items="ViewBag.ActorId"></select>
+                <label asp-for="Cast.ActorId" class="control-label"></label>
+                <select asp-for="Cast.ActorId" class ="form-control" asp-items="Model.ActorNames"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cast.CharacterName" class="control-label"></label>
+                <input asp-for="Cast.CharacterName" class="form-control" />
+                <span asp-validation-for="Cast.CharacterName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -1,4 +1,4 @@
-﻿@model SP2023_Assignment3_sriddle.Models.Cast
+﻿@model SP2023_Assignment3_sriddle.Models.CastVM
 
 @{
     ViewData["Title"] = "Delete";
@@ -12,21 +12,21 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Movie)
+            @Html.DisplayNameFor(model => model.Cast.Movie)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Movie.Title)
+            @Html.DisplayFor(model => model.Cast.Movie.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Actor)
+            @Html.DisplayNameFor(model => model.Cast.Actor)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Actor.Id)
+            @Html.DisplayFor(model => model.Cast.Actor.Name)
         </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Cast.Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

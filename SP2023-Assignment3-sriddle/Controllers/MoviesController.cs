@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP2023_Assignment3_sriddle.Data;
 using SP2023_Assignment3_sriddle.Models;
+using Tweetinvi;
+using VaderSharp2;
 
 namespace SP2023_Assignment3_sriddle.Controllers
 {
@@ -39,13 +41,54 @@ namespace SP2023_Assignment3_sriddle.Controllers
             {
                 return NotFound();
             }
-            CastsVM castsVM = new CastsVM();
+            MovieCastVM castsVM = new MovieCastVM();
             castsVM.Movie = movie;
             castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).ToList();
             //castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).Include(c => c.Actor).ToList();
 
 
             return View(castsVM);
+        }
+
+        public async Task<IActionResult> Analyze(int? id)
+        {
+            if (id == null || _context.Movie == null)
+            {
+                return NotFound();
+            }
+
+            var movie = await _context.Movie
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var userClient = new TwitterClient("AAx9UfdCemph0Pg0t8Moq5c6L", "LbhoERpFGjBESYSNjTHuRvE0R80cGxZBx5lJWanM5lFpO2Hs63", "1455230009153503238-WTxQgoYUAQ3D9PTSsUu8stHkmJvuVe", "2ZVnM9tWbCSNAhyJcyC4WPIgiIbUWZ77MTLSx2Qb8TkW3");
+            var searchResponse = await userClient.SearchV2.SearchTweetsAsync(movie.Title);
+            var tweets = searchResponse.Tweets;
+            var analyzer = new SentimentIntensityAnalyzer();
+
+            double tweetTotal = 0;
+            List<AnalyzeTweet> analyzeTweets = new List<AnalyzeTweet>();
+
+            for (int i = 0; i < tweets.Length; i++)
+            {
+                var results = analyzer.PolarityScores(tweets[i].Text);
+                tweetTotal += results.Compound;
+                analyzeTweets.Add(new AnalyzeTweet
+                {
+                    Tweet = tweets[i].Text,
+                    Sentiment = results.Compound.ToString()
+                });
+            }
+
+            TweetsVM tweetsVM = new TweetsVM();
+            tweetsVM.Name = movie.Title;
+            tweetsVM.Average = tweetTotal / tweets.Length;
+            tweetsVM.Tweets = analyzeTweets;
+
+            return View(tweetsVM);
         }
 
         // GET: Movies/Create
@@ -110,8 +153,8 @@ namespace SP2023_Assignment3_sriddle.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,IMDBLink,Genre,ReleaseYear,Poster")] Movie movie)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,IMDBLink,Genre,ReleaseYear")] Movie movie, IFormFile Poster)
         {
             if (id != movie.Id)
             {
@@ -122,6 +165,14 @@ namespace SP2023_Assignment3_sriddle.Controllers
             {
                 try
                 {
+                    if (Poster != null && Poster.Length > 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await Poster.CopyToAsync(memoryStream);
+                            movie.Poster = memoryStream.ToArray();
+                        }
+                    }
                     _context.Update(movie);
                     await _context.SaveChangesAsync();
                 }

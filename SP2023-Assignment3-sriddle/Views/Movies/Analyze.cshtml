@@ -1,0 +1,49 @@
+﻿@model SP2023_Assignment3_sriddle.Models.TweetsVM
+
+@{
+    ViewData["Title"] = "Analyze";
+}
+
+<h1>Analyze</h1>
+<div>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => modelItem.Name)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => modelItem.Average)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tweets[0].Tweet)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Tweets[0].Sentiment)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Tweets)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tweet)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sentiment)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

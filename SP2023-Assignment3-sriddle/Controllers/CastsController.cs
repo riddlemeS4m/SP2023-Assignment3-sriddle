@@ -48,10 +48,12 @@ namespace SP2023_Assignment3_sriddle.Controllers
 
         // GET: Casts/Create
         public IActionResult Create()
-        {
-            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id");
-            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title");
-            return View();
+        {            
+            CastVM castVM = new CastVM();
+            //castVM.Cast = new Cast();
+            castVM.ActorNames = new SelectList(_context.Actor, "Id", "Name");
+            castVM.MovieNames = new SelectList(_context.Movie, "Id", "Title");
+            return View(castVM);
         }
 
         // POST: Casts/Create
@@ -59,17 +61,21 @@ namespace SP2023_Assignment3_sriddle.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MovieId,ActorId")] Cast cast)
+        public async Task<IActionResult> Create([Bind("Id,MovieId,ActorId,CharacterName")] Cast cast)
         {
+            
             if (ModelState.IsValid)
             {
                 _context.Add(cast);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id", cast.ActorId);
-            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
-            return View(cast);
+
+            CastVM castVM = new CastVM();
+            castVM.Cast = cast;
+            castVM.ActorNames = new SelectList(_context.Actor, "Id", "Name", cast.ActorId);
+            castVM.MovieNames = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
+            return View(castVM);
         }
 
         // GET: Casts/Edit/5
@@ -85,9 +91,12 @@ namespace SP2023_Assignment3_sriddle.Controllers
             {
                 return NotFound();
             }
-            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id", cast.ActorId);
-            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
-            return View(cast);
+
+            CastVM castVM = new CastVM();
+            castVM.Cast = cast;
+            castVM.ActorNames = new SelectList(_context.Actor, "Id", "Name");
+            castVM.MovieNames = new SelectList(_context.Movie, "Id", "Title");
+            return View(castVM);
         }
 
         // POST: Casts/Edit/5
@@ -95,7 +104,7 @@ namespace SP2023_Assignment3_sriddle.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MovieId,ActorId")] Cast cast)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MovieId,ActorId,CharacterName")] Cast cast)
         {
             if (id != cast.Id)
             {
@@ -122,9 +131,12 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ActorId"] = new SelectList(_context.Actor, "Id", "Id", cast.ActorId);
-            ViewData["MovieId"] = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
-            return View(cast);
+
+            CastVM castVM = new CastVM();
+            castVM.Cast = cast;
+            castVM.ActorNames = new SelectList(_context.Actor, "Id", "Name", cast.ActorId);
+            castVM.MovieNames = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
+            return View(castVM);
         }
 
         // GET: Casts/Delete/5
@@ -144,7 +156,11 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 return NotFound();
             }
 
-            return View(cast);
+            CastVM castVM = new CastVM();
+            castVM.Cast = cast;
+            castVM.ActorNames = new SelectList(_context.Actor, "Id", "Name", cast.ActorId);
+            castVM.MovieNames = new SelectList(_context.Movie, "Id", "Title", cast.MovieId);
+            return View(castVM);
         }
 
         // POST: Casts/Delete/5
