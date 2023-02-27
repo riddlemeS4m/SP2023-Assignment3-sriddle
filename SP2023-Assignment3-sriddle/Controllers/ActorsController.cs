@@ -74,13 +74,13 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 analyzeTweets.Add(new AnalyzeTweet
                 {
                     Tweet = tweets[i].Text,
-                    Sentiment = results.Compound.ToString()
+                    Sentiment = Math.Round(results.Compound,3).ToString()
                 });
             }
 
             TweetsVM tweetsVM = new TweetsVM();
             tweetsVM.Name = actor.Name;
-            tweetsVM.Average = tweetTotal / tweets.Length;
+            tweetsVM.Average = Math.Round(tweetTotal / tweets.Length,3);
             tweetsVM.Tweets = analyzeTweets;
 
             return View(tweetsVM);

@@ -43,8 +43,8 @@ namespace SP2023_Assignment3_sriddle.Controllers
             }
             MovieCastVM castsVM = new MovieCastVM();
             castsVM.Movie = movie;
-            castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).ToList();
-            //castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).Include(c => c.Actor).ToList();
+            //castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).ToList();
+            castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).Include(c => c.Actor).ToList();
 
 
             return View(castsVM);
@@ -79,13 +79,13 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 analyzeTweets.Add(new AnalyzeTweet
                 {
                     Tweet = tweets[i].Text,
-                    Sentiment = results.Compound.ToString()
+                    Sentiment = Math.Round(results.Compound,3).ToString()
                 });
             }
 
             TweetsVM tweetsVM = new TweetsVM();
             tweetsVM.Name = movie.Title;
-            tweetsVM.Average = tweetTotal / tweets.Length;
+            tweetsVM.Average = Math.Round(tweetTotal / tweets.Length,3);
             tweetsVM.Tweets = analyzeTweets;
 
             return View(tweetsVM);
