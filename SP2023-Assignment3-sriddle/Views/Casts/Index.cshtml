@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<SP2023_Assignment3_sriddle.Models.Cast>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Casting Roles";
 }
 
-<h1>Movie Roles</h1>
-
+<h1>Casting Roles</h1>
+<br />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="generic-anchor" asp-action="Create">Add a New Casting Role</a>
 </p>
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -19,7 +20,7 @@
                 @Html.DisplayNameFor(model => model.Actor)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CharacterName)
+                Character Name
             </th>
             <th></th>
         </tr>

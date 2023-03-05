@@ -1,14 +1,16 @@
 ﻿@model SP2023_Assignment3_sriddle.Models.Cast
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.CharacterName + "'s Details";
 }
 
-<h1>Details</h1>
-
+<h1>@Model.CharacterName's Details</h1>
+<br />
+<p>
+    <a class="generic-anchor" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+</p>
+<br />
 <div>
-    <h4>Cast</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Movie)
@@ -23,7 +25,7 @@
             @Html.DisplayFor(model => model.Actor.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CharacterName)
+            Character Name
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CharacterName)
@@ -31,6 +33,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <br />
+    &larr; <a class="back-anchor" asp-action="Index">Back to Casting Roles List</a>
 </div>

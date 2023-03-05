@@ -1,26 +1,22 @@
 ﻿@model SP2023_Assignment3_sriddle.Models.TweetsVM
 
 @{
-    ViewData["Title"] = "Analyze";
+    ViewData["Title"] = "Analyze " + Model.Name + "'s Popularity";
 }
 
-<h1>Analyze</h1>
+<h1>Analyze @Model.Name's Popularity</h1>
+<br />
 <div>
     <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+        <dt class="col-sm-3">
+            Average Popular Sentiment
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Average)
-        </dt>
-        <dd class="col-sm-10">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.Average)
         </dd>
     </dl>
 </div>
+<br />
 <div>
     <table class="table">
         <thead>
@@ -49,5 +45,6 @@
     </table>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <br />
+    &larr; <a class="back-anchor" asp-action="Index">Back to Movie List</a>
 </div>

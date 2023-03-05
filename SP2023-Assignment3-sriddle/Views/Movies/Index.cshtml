@@ -1,14 +1,15 @@
 ﻿@model IEnumerable<SP2023_Assignment3_sriddle.Models.Movie>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Movies";
 }
 
 <h1>Movies</h1>
-
+<br />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="generic-anchor" asp-action="Create">Add a New Movie</a>
 </p>
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -16,13 +17,13 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IMDBLink)
+                IMDB Link
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Genre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReleaseYear)
+                Release Year
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Poster)

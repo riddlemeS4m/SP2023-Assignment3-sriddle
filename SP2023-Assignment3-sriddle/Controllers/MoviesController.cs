@@ -168,18 +168,20 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 return NotFound();
             }
 
+            if (Poster != null && Poster.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await Poster.CopyToAsync(memoryStream);
+                    movie.Poster = memoryStream.ToArray();
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (Poster != null && Poster.Length > 0)
-                    {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await Poster.CopyToAsync(memoryStream);
-                            movie.Poster = memoryStream.ToArray();
-                        }
-                    }
+                    
                     _context.Update(movie);
                     await _context.SaveChangesAsync();
                 }

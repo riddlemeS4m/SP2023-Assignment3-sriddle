@@ -1,13 +1,11 @@
 ﻿@model SP2023_Assignment3_sriddle.Models.Movie
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit " + Model.Title;
 }
 
-<h1>Edit</h1>
-
-<h4>Movie</h4>
-<hr />
+<h1>Edit @Model.Title</h1>
+<br />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
@@ -19,7 +17,7 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IMDBLink" class="control-label"></label>
+                <label asp-for="IMDBLink" class="control-label">Link to IMDB</label>
                 <input asp-for="IMDBLink" class="form-control" />
                 <span asp-validation-for="IMDBLink" class="text-danger"></span>
             </div>
@@ -29,24 +27,23 @@
                 <span asp-validation-for="Genre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReleaseYear" class="control-label"></label>
+                <label asp-for="ReleaseYear" class="control-label">Release Year</label>
                 <input asp-for="ReleaseYear" class="form-control" />
                 <span asp-validation-for="ReleaseYear" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Poster" class="control-label"></label>
-                <input asp-for="Poster" type="file" id="Poster" name="Poster" multiple class="form-control" />
+                <input required="false" asp-for="Poster" type="file" id="Poster" name="Poster" multiple class="form-control" />
                 <span asp-validation-for="Poster" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-danger" />
+                <br /><br />
+                &larr; <a class="back-anchor" asp-action="Index">Back to Movie List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

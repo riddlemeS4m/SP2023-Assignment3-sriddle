@@ -1,39 +1,36 @@
 ﻿@model SP2023_Assignment3_sriddle.Models.CastVM
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Casting Role";
 }
 
-<h1>Create</h1>
-
-<h4>Cast</h4>
-<hr />
+<h1>Add a New Casting Role</h1>
+<br />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Cast.MovieId" class="control-label"></label>
+                <label asp-for="Cast.MovieId" class="control-label">What movie is this character in?</label>
                 <select asp-for="Cast.MovieId" class ="form-control" asp-items="Model.MovieNames"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Cast.ActorId" class="control-label"></label>
+                <label asp-for="Cast.ActorId" class="control-label">What actor plays this character?</label>
                 <select asp-for="Cast.ActorId" class ="form-control" asp-items="Model.ActorNames"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Cast.CharacterName" class="control-label"></label>
+                <label asp-for="Cast.CharacterName" class="control-label">What is this character's name?</label>
                 <input asp-for="Cast.CharacterName" class="form-control" />
                 <span asp-validation-for="Cast.CharacterName" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Add Casting Role" class="btn btn-danger" />
+                <br /><br />
+                &larr; <a class="back-anchor" asp-action="Index">Back to Casting Roles</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

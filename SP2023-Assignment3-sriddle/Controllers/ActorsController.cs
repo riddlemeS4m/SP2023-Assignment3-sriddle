@@ -170,12 +170,12 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 actor.Photo = memoryStream.ToArray();
             }
 
-            var localActor = await _context.Actor.FirstOrDefaultAsync(a => a.Id == id);
+            //var localActor = await _context.Actor.FirstOrDefaultAsync(a => a.Id == id);
 
-            if (actor.Photo == null)
-            {
-                actor.Photo = localActor.Photo;
-            }
+            //if (actor.Photo == null)
+            //{
+            //    actor.Photo = localActor.Photo;
+            //}
 
             if (ModelState.IsValid)
             {
