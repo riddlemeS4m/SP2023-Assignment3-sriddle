@@ -65,12 +65,19 @@ namespace SP2023_Assignment3_sriddle.Controllers
             var analyzer = new SentimentIntensityAnalyzer();
 
             double tweetTotal = 0;
+            int tweetCount = 0;
             List<AnalyzeTweet> analyzeTweets = new List<AnalyzeTweet>();
 
             for (int i = 0; i < tweets.Length; i++)
             {
                 var results = analyzer.PolarityScores(tweets[i].Text);
                 tweetTotal += results.Compound;
+
+                if(results.Compound != 0)
+                {
+                    tweetCount += 1;
+                }
+
                 analyzeTweets.Add(new AnalyzeTweet
                 {
                     Tweet = tweets[i].Text,
@@ -80,7 +87,7 @@ namespace SP2023_Assignment3_sriddle.Controllers
 
             TweetsVM tweetsVM = new TweetsVM();
             tweetsVM.Name = actor.Name;
-            tweetsVM.Average = Math.Round(tweetTotal / tweets.Length,3);
+            tweetsVM.Average = Math.Round(tweetTotal / tweetCount,3);
             tweetsVM.Tweets = analyzeTweets;
 
             return View(tweetsVM);
@@ -156,18 +163,24 @@ namespace SP2023_Assignment3_sriddle.Controllers
                 return NotFound();
             }
 
+            if (Photo != null && Photo.Length > 0)
+            {
+                var memoryStream = new MemoryStream();
+                await Photo.CopyToAsync(memoryStream);
+                actor.Photo = memoryStream.ToArray();
+            }
+
+            var localActor = await _context.Actor.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (actor.Photo == null)
+            {
+                actor.Photo = localActor.Photo;
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (Photo != null && Photo.Length > 0)
-                    {
-                        using (var memoryStream = new MemoryStream())
-                        {
-                            await Photo.CopyToAsync(memoryStream);
-                            actor.Photo = memoryStream.ToArray();
-                        }
-                    }
                     _context.Update(actor);
                     await _context.SaveChangesAsync();
                 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SP2023_Assignment3_sriddle.Data;
@@ -10,6 +11,7 @@ using SP2023_Assignment3_sriddle.Models;
 
 namespace SP2023_Assignment3_sriddle.Controllers
 {
+    //[Authorize (Roles = "AdministratorRole,ManagerRole")]
     public class CastsController : Controller
     {
         private readonly ApplicationDbContext _context;

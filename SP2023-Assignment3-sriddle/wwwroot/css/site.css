@@ -16,3 +16,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+body {
+    background: url(../images/background1.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+   /* font-weight: bold;*/
+}

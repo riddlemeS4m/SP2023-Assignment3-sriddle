@@ -70,12 +70,19 @@ namespace SP2023_Assignment3_sriddle.Controllers
             var analyzer = new SentimentIntensityAnalyzer();
 
             double tweetTotal = 0;
+            int tweetCount = 0;
             List<AnalyzeTweet> analyzeTweets = new List<AnalyzeTweet>();
 
             for (int i = 0; i < tweets.Length; i++)
             {
                 var results = analyzer.PolarityScores(tweets[i].Text);
                 tweetTotal += results.Compound;
+
+                if(results.Compound != 0)
+                {
+                    tweetCount += 1;
+                }
+
                 analyzeTweets.Add(new AnalyzeTweet
                 {
                     Tweet = tweets[i].Text,
@@ -85,7 +92,7 @@ namespace SP2023_Assignment3_sriddle.Controllers
 
             TweetsVM tweetsVM = new TweetsVM();
             tweetsVM.Name = movie.Title;
-            tweetsVM.Average = Math.Round(tweetTotal / tweets.Length,3);
+            tweetsVM.Average = Math.Round(tweetTotal / tweetCount,3);
             tweetsVM.Tweets = analyzeTweets;
 
             return View(tweetsVM);
