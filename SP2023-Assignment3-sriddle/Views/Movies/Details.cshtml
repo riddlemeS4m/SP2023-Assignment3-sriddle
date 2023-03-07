@@ -70,15 +70,56 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Movie.Title)
+                        @Html.DisplayFor(modelItem => item.Actor.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Actor.Name)
+                        @Html.DisplayFor(modelItem => item.CharacterName)
                     </td>
                     <td>
                         <a asp-controller="Casts" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                         <a asp-controller="Casts" asp-action="Details" asp-route-id="@item.Id">Details</a> |
                         <a asp-controller="Casts" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+<h1>Analyze @Model.TweetsVM.Name's Popularity</h1>
+<br />
+<div>
+    <dl class="row">
+        <dt class="col-sm-3">
+            Average Popular Sentiment
+        </dt>
+        <dd class="col-sm-2">
+            @Html.DisplayFor(model => model.TweetsVM.Average)
+        </dd>
+    </dl>
+</div>
+<br />
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.TweetsVM.Tweets[0].Tweet)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TweetsVM.Tweets[0].Sentiment)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.TweetsVM.Tweets)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tweet)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sentiment)
                     </td>
                 </tr>
             }

@@ -46,6 +46,39 @@ namespace SP2023_Assignment3_sriddle.Controllers
             //castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).ToList();
             castsVM.Casts = _context.Cast.Where(c => c.MovieId == id).Include(c => c.Actor).ToList();
 
+            var userClient = new TwitterClient("AAx9UfdCemph0Pg0t8Moq5c6L", "LbhoERpFGjBESYSNjTHuRvE0R80cGxZBx5lJWanM5lFpO2Hs63", "1455230009153503238-WTxQgoYUAQ3D9PTSsUu8stHkmJvuVe", "2ZVnM9tWbCSNAhyJcyC4WPIgiIbUWZ77MTLSx2Qb8TkW3");
+            var searchResponse = await userClient.SearchV2.SearchTweetsAsync(movie.Title);
+            var tweets = searchResponse.Tweets;
+            var analyzer = new SentimentIntensityAnalyzer();
+
+            double tweetTotal = 0;
+            int tweetCount = 0;
+            List<AnalyzeTweet> analyzeTweets = new List<AnalyzeTweet>();
+
+            for (int i = 0; i < tweets.Length; i++)
+            {
+                var results = analyzer.PolarityScores(tweets[i].Text);
+                tweetTotal += results.Compound;
+
+                if (results.Compound != 0)
+                {
+                    tweetCount += 1;
+                }
+
+                analyzeTweets.Add(new AnalyzeTweet
+                {
+                    Tweet = tweets[i].Text,
+                    Sentiment = Math.Round(results.Compound, 3).ToString()
+                });
+            }
+
+            TweetsVM tweetsVM = new TweetsVM();
+            tweetsVM.Name = movie.Title;
+            tweetsVM.Average = Math.Round(tweetTotal / tweetCount, 3);
+            tweetsVM.Tweets = analyzeTweets;
+
+            castsVM.TweetsVM = tweetsVM;
+
 
             return View(castsVM);
         }
